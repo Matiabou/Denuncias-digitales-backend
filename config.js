@@ -1,12 +1,10 @@
+import dotenv from 'dotenv'
 
-const PORT = 8080
-const MODO_PERSISTENCIA = process.env.MODO_PERSISTENCIA || ''
-const STRCNX = process.env.STRCNX || ''
-const BASE = process.env.BASE || 'test'
+dotenv.config()
 
 export default {
-    PORT,   
-    MODO_PERSISTENCIA,
-    STRCNX,
-    BASE
+    PORT: process.env.PORT || 3000,
+    MODO_PERSISTENCIA: process.env.MODO_PERSISTENCIA || 'MONGODB',
+    STRCNX: process.env.MONGODB_URI,
+    BASE: process.env.BASE || 'denuncias'
 }

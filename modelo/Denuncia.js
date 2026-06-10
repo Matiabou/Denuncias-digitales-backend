@@ -2,31 +2,31 @@ import Joi from 'joi'
 
 class Denuncia {
 
-    constructor(Persona, descripcion, fecha, ubicacion, estado){
-           this.persona = Persona,
-           this.descripcion = descripcion,
-           this.fecha = new Date(),
-           this.ubicacion = ubicacion,
-           this.estado = estado
+    constructor(usuarioId, descripcion, fecha, ubicacion, estado) {
+        this.usuarioId = usuarioId
+        this.descripcion = descripcion
+        this.fecha = fecha || new Date()
+        this.ubicacion = ubicacion
+        this.estado = estado || 'pendiente'
     }
 
- validar() {
+    validar() {
         const schema = Joi.object({
-            descripcion :  Joi.string().alphanum().required(),
-            ubicacion:Joi.string().alphanum().required(),
-        });
+            usuarioId: Joi.string().required(),
+            descripcion: Joi.string().min(10).max(1000).required(),
+            ubicacion: Joi.string().required(),
+            fecha: Joi.date(),
+            estado: Joi.string()
+        })
 
-        const { error } = schema.validate({
-            descripcion: this.descripcion,
-            ubicacion: this.ubicacion,
-        });
-        if(error) {
-            throw new Error(error)
-        }
-    }        
+        const { error } = schema.validate(this)
 
-    get (){
-        return{
+        if (error) throw error
+    }
+
+    get() {
+        return {
+            usuarioId: this.usuarioId,
             descripcion: this.descripcion,
             fecha: this.fecha,
             ubicacion: this.ubicacion,
@@ -34,11 +34,6 @@ class Denuncia {
         }
     }
 
-
-
-
-
-
-
-
 }
+
+export default Denuncia

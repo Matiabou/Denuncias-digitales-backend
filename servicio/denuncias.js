@@ -1,5 +1,5 @@
-import Producto from '../modelo/Denuncia.js'
-import MongoDB from '../modelo/DAO/denunciasMongoDB.js' 
+import Denuncia from '../modelo/Denuncia.js'
+import MongoDB from '../modelo/DAO/denunciasMongoDB.js'
 import config from '../config.js'
 
 
@@ -7,11 +7,11 @@ class Servicio {
     #modelo = null
 
     constructor() {
-        this.#modelo = MongoDB()
+        this.#modelo = new MongoDB()
     }
 
     obtenerDenuncias = async id => {
-        if(id) {
+        if (id) {
             const denuncia = await this.#modelo.obtenerDenuncia(id)
             return denuncia
         }
@@ -21,12 +21,12 @@ class Servicio {
         }
     }
 
-    guardarDenuncia = async denuncia => {
-        const denuncia = new Denuncia(denuncia)
+    guardarDenuncia = async datos => {
+        const denuncia = new Denuncia(datos.usuarioId, datos.descripcion, datos.fecha, datos.ubicacion, datos.estado)
+
         denuncia.validar()
 
-        const denunciaGuardada = await this.#modelo.guardarDenuncia(denuncia.get())
-        return denunciaGuardada
+        return await this.#modelo.guardarDenuncia(denuncia.get())
     }
 
     actualizarDenuncia = async (id, denuncia) => {
@@ -37,6 +37,10 @@ class Servicio {
     borrarDenuncia = async id => {
         const denunciaEliminada = await this.#modelo.borrarDenuncia(id)
         return denunciaEliminada
+    }
+
+    obtenerPorUsuario = async id => {
+        return await this.#modelo.obtenerPorUsuario(id)
     }
 }
 

@@ -17,6 +17,7 @@ class Router {
         router.put('/:id', this.#controlador.actualizarDenuncia)
         router.delete('/:id', this.#controlador.borrarDenuncia)
         router.get('/usuario/:id', this.#controlador.obtenerPorUsuario)
+        router.get('/:id/pdf', this.#controlador.exportarPDF)
 
         return router
     }

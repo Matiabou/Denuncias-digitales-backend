@@ -1,6 +1,7 @@
 import Denuncia from '../modelo/Denuncia.js'
 import MongoDB from '../modelo/DAO/denunciasMongoDB.js'
 import UsuariosMongoDB from '../modelo/DAO/usuariosMongoDB.js'
+import PDFDocument from 'pdfkit'
 import config from '../config.js'
 
 
@@ -55,6 +56,46 @@ class Servicio {
     obtenerPorUsuario = async id => {
         return await this.#modelo.obtenerPorUsuario(id)
     }
+
+    generarPDF = async id => {
+
+    const denuncia = await this.#modelo.obtenerDenuncia(id)
+
+    if (!denuncia)
+        throw new Error('Denuncia inexistente')
+
+    const usuario = await this.#usuarios.obtenerUsuario(
+        denuncia.usuarioId
+    )
+
+    const doc = new PDFDocument()
+
+    doc.fontSize(20)
+    doc.text('DENUNCIA DIGITAL')
+
+    doc.moveDown()
+
+    doc.fontSize(12)
+
+    doc.text(`ID: ${denuncia._id}`)
+    doc.text(`Fecha: ${denuncia.fecha}`)
+    doc.text(`Estado: ${denuncia.estado}`)
+
+    doc.moveDown()
+
+    doc.text(
+        `Denunciante: ${usuario.nombre} ${usuario.apellido} - DNI: ${usuario.dni} - Sexo: ${usuario.sexo}`)
+
+    doc.text(`Domicilio: ${usuario.domicilio}`)
+    doc.text(`Teléfono: ${usuario.telefono}`)
+
+    doc.moveDown()
+
+    doc.text('Descripción:')
+    doc.text(denuncia.descripcion)
+
+    return doc
+}
 }
 
 export default Servicio

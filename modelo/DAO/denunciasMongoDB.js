@@ -12,9 +12,9 @@ class DenunciaMongoDB {
             )
     }
 
-    async obtenerDenuncias() {
+    async obtenerDenuncias(filtro = {}) {
         return await this.collection
-            .find()
+            .find(filtro)
             .toArray()
     }
 
@@ -73,9 +73,7 @@ class DenunciaMongoDB {
     }
 
     async obtenerPorUsuario(usuarioId) {
-        return await this.collection.find({
-            usuarioId
-        }).toArray()
+        return await this.collection.find({usuarioId}).toArray()
     }
 
 }

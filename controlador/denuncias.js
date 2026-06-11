@@ -11,11 +11,13 @@ class Controlador {
     obtenerDenuncias = async (req, res) => {
         try {
             const { id } = req.params
-            const denuncias = await this.#servicio.obtenerDenuncias(id)
+            const { estado } = req.query
+            const denuncias = await this.#servicio.obtenerDenuncias(id, estado)
+
             res.json(denuncias)
         }
         catch (error) {
-            res.status(500).json({ url: req.url, method: req.method, error: error.message })
+            res.status(500).json({error: error.message})
         }
     }
 

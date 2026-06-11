@@ -1,27 +1,40 @@
 import Denuncia from '../modelo/Denuncia.js'
 import MongoDB from '../modelo/DAO/denunciasMongoDB.js'
+import UsuariosMongoDB from '../modelo/DAO/usuariosMongoDB.js'
 import config from '../config.js'
+
 
 
 class Servicio {
     #modelo = null
+    #usuarios = null
 
     constructor() {
         this.#modelo = new MongoDB()
+        this.#usuarios = new UsuariosMongoDB()
     }
 
-    obtenerDenuncias = async id => {
-        if (id) {
-            const denuncia = await this.#modelo.obtenerDenuncia(id)
-            return denuncia
-        }
-        else {
-            const denuncias = await this.#modelo.obtenerDenuncias()
-            return denuncias
-        }
+    obtenerDenuncias = async (id, estado) => {
+        if (id)
+            return await this.#modelo.obtenerDenuncia(id)
+
+        const filtro = {}
+
+        if (estado)
+            filtro.estado = estado
+
+        return await this.#modelo.obtenerDenuncias(filtro)
     }
 
     guardarDenuncia = async datos => {
+        const usuario = await this.#usuarios.obtenerUsuario(datos.usuarioId)
+
+        if (!usuario) {
+            throw new Error(
+                'Usuario inexistente'
+            )
+        }
+
         const denuncia = new Denuncia(datos.usuarioId, datos.descripcion, datos.fecha, datos.ubicacion, datos.estado)
 
         denuncia.validar()

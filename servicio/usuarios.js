@@ -1,12 +1,14 @@
 import Usuario from '../modelo/Usuario.js'
 import UsuariosMongoDB from '../modelo/DAO/usuariosMongoDB.js'
+import DenunciasMongoDB from '../modelo/DAO/denunciasMongoDB.js'
 
 class Servicio {
-
     #modelo = null
+    #denuncias = null
 
     constructor() {
         this.#modelo = new UsuariosMongoDB()
+        this.#denuncias = new DenunciasMongoDB()
     }
 
     obtenerUsuarios = async id => {
@@ -25,9 +27,16 @@ class Servicio {
 
     }
 
-    actualizarUsuario = async (id, usuario) => await this.#modelo.actualizarUsuario(id,usuario)
+    actualizarUsuario = async (id, usuario) => await this.#modelo.actualizarUsuario(id, usuario)
 
-    borrarUsuario = async id => await this.#modelo.borrarUsuario(id)
+    borrarUsuario = async id => {
+    const denuncias = await this.#denuncias.obtenerPorUsuario(id)
+
+    if (denuncias.length > 0)
+        throw new Error('No se puede borrar un usuario con denuncias')
+
+    return await this.#modelo.borrarUsuario(id)
+}
 
 }
 

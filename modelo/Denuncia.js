@@ -16,7 +16,7 @@ class Denuncia {
             descripcion: Joi.string().min(10).max(1000).required(),
             ubicacion: Joi.string().required(),
             fecha: Joi.date(),
-            estado: Joi.string()
+            estado: Joi.string().valid('pendiente', 'en_revision', 'resuelta', 'rechazada').default('pendiente')
         })
 
         const { error } = schema.validate(this)

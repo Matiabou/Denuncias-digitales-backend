@@ -14,6 +14,7 @@ class Router {
 
         router.get('{/:id}', this.#controlador.obtenerUsuarios)
         router.post('/', this.#controlador.guardarUsuario)
+        router.post('/login', this.#controlador.loginUsuario)
         router.put('/:id', this.#controlador.actualizarUsuario)
         router.delete('/:id', this.#controlador.borrarUsuario)
 

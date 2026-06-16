@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import RouterDenuncias from './router/denuncias.js'
 import RouterUsuarios from './router/usuarios.js'
 
@@ -16,9 +17,10 @@ class Server {
 
     start() {
         const app = express()
-        
+
+        app.use(cors())
         app.use(express.json())
-        app.use(express.urlencoded({extended: true}))
+        app.use(express.urlencoded({ extended: true }))
 
         //Servicio de recursos estáticos (recursos de Frontend)
         app.use(express.static('public'))

@@ -1,0 +1,32 @@
+{
+  "type": "module",
+  "name": "apirestful-denuncias",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/**/*.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test-denuncias": "mocha test/denuncias.test.js",
+    "test-usuarios": "mocha test/usuarios.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^6.2.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "joi": "^18.2.1",
+    "mocha": "^11.7.6",
+    "mongodb": "^7.2.0",
+    "multer": "^2.2.0",
+    "pdfkit": "^0.19.1",
+    "supertest": "^7.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

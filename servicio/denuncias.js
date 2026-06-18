@@ -14,14 +14,44 @@ class Servicio {
   }
 
   obtenerDenuncias = async (id, estado) => {
-    if (id) return await this.#modelo.obtenerDenuncia(id);
+
+  let denuncias;
+
+  if (id) {
+    denuncias = await this.#modelo.obtenerDenuncia(id);
+  } else {
 
     const filtro = {};
 
     if (estado) filtro.estado = estado;
 
-    return await this.#modelo.obtenerDenuncias(filtro);
-  };
+    denuncias = await this.#modelo.obtenerDenuncias(filtro);
+  }
+
+  if (!denuncias) return null;
+
+  if (!Array.isArray(denuncias)) {
+
+    return {
+      ...denuncias,
+      evidencias: denuncias.evidencias?.map(e => ({
+        ...e,
+        url: `http://localhost:3000/${e.ruta}`
+      }))
+    };
+
+  }
+
+  return denuncias.map(d => ({
+    ...d,
+    evidencias: d.evidencias?.map(e => ({
+      ...e,
+      url: `http://localhost:3000/${e.ruta}`
+    }))
+  }));
+
+};
+
 
   guardarDenuncia = async (datos) => {
     const usuario = await this.#usuarios.obtenerUsuario(datos.usuarioId);

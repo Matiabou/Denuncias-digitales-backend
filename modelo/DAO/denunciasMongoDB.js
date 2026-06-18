@@ -3,22 +3,29 @@ import { ObjectId } from "mongodb";
 
 class DenunciaMongoDB {
   constructor() {}
+async obtenerDenuncias(filtro = {}) {
 
-  async obtenerDenuncias(filtro = {}) {
-    if (!CnxMongoDB.connectionOK)
-      throw new Error("Error de conexión a base de datos");
+  if (!CnxMongoDB.connectionOK)
+    throw new Error("Error de conexión a base de datos");
 
-    return await CnxMongoDB.db.collection("denuncias").find(filtro).toArray();
-  }
+  return await CnxMongoDB.db
+    .collection("denuncias")
+    .find(filtro)
+    .toArray();
+}
 
-  async obtenerDenuncia(id) {
-    if (!CnxMongoDB.connectionOK)
-      throw new Error("Error de conexión a base de datos");
 
-    return await CnxMongoDB.db.collection("denuncias").findOne({
-      _id: new ObjectId(id),
+async obtenerDenuncia(id) {
+
+  if (!CnxMongoDB.connectionOK)
+    throw new Error("Error de conexión a base de datos");
+
+  return await CnxMongoDB.db
+    .collection("denuncias")
+    .findOne({
+      _id: new ObjectId(id)
     });
-  }
+}
 
   async guardarDenuncia(denuncia) {
     if (!CnxMongoDB.connectionOK)
@@ -77,13 +84,7 @@ class DenunciaMongoDB {
 
     return await CnxMongoDB.db.collection("denuncias").updateOne(
       { _id: new ObjectId(id) },
-      {
-        $push: {
-          evidencias: {
-            ruta: rutaArchivo,
-            fecha: new Date(),
-          },
-        },
+      { $push: { evidencias: {ruta: rutaArchivo,fecha: new Date(), },},
       },
     );
   }

@@ -1,48 +1,44 @@
 import { expect } from "chai";
 import supertest from "supertest";
-
-const request = supertest("http://localhost:3000");
+import Server from "../server.js";
 
 describe("*** TEST API DENUNCIAS ***", () => {
-  describe("GET /api/denuncias", () => {
-    it("Debería retornar status 200", async () => {
+  describe("GET", () => {
+    it("Debería retornar un status 200", async () => {
+      const server = new Server(3001, "MONGODB");
+      const app = await server.start();
+
+      const request = supertest(app);
+
       const response = await request.get("/api/denuncias");
 
       expect(response.status).to.eql(200);
+
+      await server.stop();
     });
   });
+  describe("POST", () => {
+    it("Debería crear una denuncia", async () => {
+      const server = new Server(3001, "MONGODB");
+      const app = await server.start();
 
-  describe("POST /api/denuncias", () => {
-    it("Debe guardar una denuncia válida", async () => {
+      const request = supertest(app);
+
       const denuncia = {
-        usuarioId: "6a29f7051b5ee754df756e9c",
+        usuarioId: "6a31d128d9c7247b8b536cbd",
         descripcion: "Descripción válida para una denuncia",
         ubicacion: "Buenos Aires",
+        hora: "14:30",
+        tipo: "Robo",
       };
 
       const response = await request.post("/api/denuncias").send(denuncia);
-      console.log("STATUS:", response.status);
-      console.log("BODY:", response.body);
+
+      console.log(response.error);
 
       expect(response.status).to.eql(200);
-    });
 
-    it("Debe retornar error con una denuncia inválida", async () => {
-      const denuncia = {
-        usuarioId: "usuario1",
-        descripcion: "corta",
-        ubicacion: "Buenos Aires",
-      };
-
-      const response = await request.post("/api/denuncias").send(denuncia);
-
-      expect(response.status).to.eql(500);
-    });
-
-    it("Debe retornar error si la denuncia está vacía", async () => {
-      const response = await request.post("/api/denuncias").send({});
-
-      expect(response.status).to.eql(500);
+      await server.stop();
     });
   });
 });

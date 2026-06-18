@@ -1,92 +1,92 @@
-import CnxMongoDB from '../DBMongo.js'
-import { ObjectId } from 'mongodb'
+import CnxMongoDB from "../DBMongo.js";
+import { ObjectId } from "mongodb";
 
 class DenunciaMongoDB {
+  constructor() {}
 
-    collection = null
+  async obtenerDenuncias(filtro = {}) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-    constructor() {
-        this.collection =
-            CnxMongoDB.db.collection(
-                'denuncias'
-            )
-    }
+    return await CnxMongoDB.db.collection("denuncias").find(filtro).toArray();
+  }
 
-    async obtenerDenuncias(filtro = {}) {
-        return await this.collection
-            .find(filtro)
-            .toArray()
-    }
+  async obtenerDenuncia(id) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-    async obtenerDenuncia(id) {
-        return await this.collection
-            .findOne({
-                _id:
-                    new ObjectId(id)
-            })
-    }
+    return await CnxMongoDB.db.collection("denuncias").findOne({
+      _id: new ObjectId(id),
+    });
+  }
 
-    async guardarDenuncia(
-        denuncia
-    ) {
+  async guardarDenuncia(denuncia) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-        const resultado =
-            await this.collection
-                .insertOne(denuncia)
+    const resultado = await CnxMongoDB.db
+      .collection("denuncias")
+      .insertOne(denuncia);
 
-        return {
-            ...denuncia,
-            _id: resultado.insertedId
-        }
-    }
+    return {
+      ...denuncia,
+      _id: resultado.insertedId,
+    };
+  }
 
-    async actualizarDenuncia(
-        id,
-        denuncia
-    ) {
+  async actualizarDenuncia(id, denuncia) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-        await this.collection
-            .updateOne(
-                {
-                    _id:
-                        new ObjectId(id)
-                },
-                {
-                    $set:
-                        denuncia
-                }
-            )
+    await CnxMongoDB.db
+      .collection("denuncias")
+      .updateOne({ _id: new ObjectId(id) }, { $set: denuncia });
 
-        return denuncia
-    }
+    return denuncia;
+  }
 
-    async borrarDenuncia(
-        id
-    ) {
+  async borrarDenuncia(id) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-        return await this.collection
-            .deleteOne({
-                _id:
-                    new ObjectId(id)
-            })
+    return await CnxMongoDB.db.collection("denuncias").deleteOne({
+      _id: new ObjectId(id),
+    });
+  }
 
-    }
+  async obtenerPorUsuario(usuarioId) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-    async obtenerPorUsuario(usuarioId) {
-        return await this.collection.find({usuarioId}).toArray()
-    }
+    return await CnxMongoDB.db
+      .collection("denuncias")
+      .find({ usuarioId })
+      .toArray();
+  }
 
-    async obtenerPorTipo(tipo) {
-        return await this.collection.find({tipo}).toArray()
-    }
+  async obtenerPorTipo(tipo) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
 
-    async subirEvidencia(id, rutaArchivo) {
-        return await this.collection.updateOne(
-            { _id: new ObjectId(id) },
-            { $push: { evidencias: { ruta: rutaArchivo, fecha: new Date() } } }
-        )
-    }
+    return await CnxMongoDB.db.collection("denuncias").find({ tipo }).toArray();
+  }
 
+  async subirEvidencia(id, rutaArchivo) {
+    if (!CnxMongoDB.connectionOK)
+      throw new Error("Error de conexión a base de datos");
+
+    return await CnxMongoDB.db.collection("denuncias").updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $push: {
+          evidencias: {
+            ruta: rutaArchivo,
+            fecha: new Date(),
+          },
+        },
+      },
+    );
+  }
 }
 
-export default DenunciaMongoDB
+export default DenunciaMongoDB;

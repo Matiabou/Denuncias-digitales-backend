@@ -9,7 +9,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test-denuncias": "mocha test/denuncias.test.js",
-    "test-usuarios": "mocha test/usuarios.test.js"
+    "test-usuarios": "mocha test/usuarios.test.js",
+    "test-api-denuncias": "mocha test/api-denuncias.test.js"
   },
   "keywords": [],
   "author": "",

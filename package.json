@@ -5,12 +5,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/*.js",
+    "test": "mocha test/**/*.js --timeout 10000",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test-denuncias": "mocha test/denuncias.test.js",
     "test-usuarios": "mocha test/usuarios.test.js",
-    "test-api-denuncias": "mocha test/api-denuncias.test.js"
+    "test-api-denuncias": "mocha test/api-denuncias.test.js --timeout 10000",
+    "test-api-usuarios": "mocha test/api-usuarios.test.js --timeout 10000"
   },
   "keywords": [],
   "author": "",

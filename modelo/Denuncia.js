@@ -10,6 +10,7 @@ class Denuncia {
     hora,
     tipo,
     evidencias = [],
+    titulo = "",
   ) {
     this.usuarioId = usuarioId;
     this.descripcion = descripcion;
@@ -19,6 +20,7 @@ class Denuncia {
     this.evidencias = evidencias;
     this.hora = hora;
     this.tipo = tipo;
+    this.titulo = titulo;
   }
 
   validar() {
@@ -33,6 +35,7 @@ class Denuncia {
       hora: Joi.string().required(),
       tipo: Joi.string().required(),
       evidencias: Joi.array().default([]),
+      titulo: Joi.string().allow("").max(200),
     });
 
     const { error } = schema.validate(this);
@@ -50,6 +53,7 @@ class Denuncia {
       hora: this.hora,
       tipo: this.tipo,
       evidencias: this.evidencias,
+      titulo: this.titulo,
     };
   }
 }

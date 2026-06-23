@@ -15,42 +15,42 @@ class Servicio {
 
   obtenerDenuncias = async (id, estado) => {
 
-  let denuncias;
+    let denuncias;
 
-  if (id) {
-    denuncias = await this.#modelo.obtenerDenuncia(id);
-  } else {
+    if (id) {
+      denuncias = await this.#modelo.obtenerDenuncia(id);
+    } else {
 
-    const filtro = {};
+      const filtro = {};
 
-    if (estado) filtro.estado = estado;
+      if (estado) filtro.estado = estado;
 
-    denuncias = await this.#modelo.obtenerDenuncias(filtro);
-  }
+      denuncias = await this.#modelo.obtenerDenuncias(filtro);
+    }
 
-  if (!denuncias) return null;
+    if (!denuncias) return null;
 
-  if (!Array.isArray(denuncias)) {
+    if (!Array.isArray(denuncias)) {
 
-    return {
-      ...denuncias,
-      evidencias: denuncias.evidencias?.map(e => ({
+      return {
+        ...denuncias,
+        evidencias: denuncias.evidencias?.map(e => ({
+          ...e,
+          url: `http://localhost:3000/${e.ruta}`
+        }))
+      };
+
+    }
+
+    return denuncias.map(d => ({
+      ...d,
+      evidencias: d.evidencias?.map(e => ({
         ...e,
         url: `http://localhost:3000/${e.ruta}`
       }))
-    };
+    }));
 
-  }
-
-  return denuncias.map(d => ({
-    ...d,
-    evidencias: d.evidencias?.map(e => ({
-      ...e,
-      url: `http://localhost:3000/${e.ruta}`
-    }))
-  }));
-
-};
+  };
 
 
   guardarDenuncia = async (datos) => {
@@ -68,6 +68,8 @@ class Servicio {
       datos.estado,
       datos.hora,
       datos.tipo,
+      datos.evidencias || [],
+      datos.titulo || "",
     );
 
     denuncia.validar();

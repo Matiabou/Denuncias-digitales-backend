@@ -52,4 +52,20 @@ describe("*** TEST DENUNCIA ***", () => {
 
     expect(denuncia.get().fecha).to.exist;
   });
+
+  it("Debe incluir un título cuando se proporciona", () => {
+    const denuncia = new Denuncia(
+      "usuario1",
+      "Descripción válida para una denuncia",
+      new Date(),
+      "Buenos Aires",
+      "pendiente",
+      "10:00",
+      "robo",
+      [],
+      "Robo en la esquina",
+    );
+
+    expect(denuncia.get().titulo).to.eql("Robo en la esquina");
+  });
 });

@@ -19,7 +19,6 @@ class Servicio {
     }
 
     guardarUsuario = async datos => {
-        const contrasenia = datos.contrasenia ?? datos.contraseña ?? datos.contrasena
         const usuario = new Usuario(
             datos.nombre,
             datos.apellido,
@@ -28,7 +27,7 @@ class Servicio {
             datos.telefono,
             datos.domicilio,
             datos.sexo,
-            contrasenia
+            datos.contrasenia
         )
 
         usuario.validar()

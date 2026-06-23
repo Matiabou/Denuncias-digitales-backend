@@ -41,7 +41,9 @@ class DenunciaMongoDB {
       .collection("denuncias")
       .updateOne({ _id: new ObjectId(id) }, { $set: denuncia });
 
-    return denuncia;
+    return await CnxMongoDB.db
+      .collection("denuncias")
+      .findOne({ _id: new ObjectId(id) });
   }
 
   async borrarDenuncia(id) {

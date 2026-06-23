@@ -42,6 +42,8 @@ class Controlador {
         id,
         denuncia,
       );
+      console.log("CONTROLADOR DEVUELVE:", denunciaActualizada);
+
       res.json(denunciaActualizada);
     } catch (error) {
       res
@@ -87,16 +89,16 @@ class Controlador {
       const { id } = req.params;
 
       if (!req.file) {
-        throw new Error('No se ha subido ningún archivo');
+        throw new Error("No se ha subido ningún archivo");
       }
 
       const rutaArchivo = req.file.path;
       const resultado = await this.#servicio.subirEvidencia(id, rutaArchivo);
-      
+
       res.json({
-        mensaje: 'Evidencia subida correctamente',
+        mensaje: "Evidencia subida correctamente",
         archivo: req.file.filename,
-        ruta: rutaArchivo
+        ruta: rutaArchivo,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

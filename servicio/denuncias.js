@@ -14,13 +14,12 @@ class Servicio {
   }
 
   obtenerDenuncias = async (id, estado) => {
-
+    console.log("ENTRO A OBTENER DENUNCIAS");
     let denuncias;
 
     if (id) {
       denuncias = await this.#modelo.obtenerDenuncia(id);
     } else {
-
       const filtro = {};
 
       if (estado) filtro.estado = estado;
@@ -29,29 +28,38 @@ class Servicio {
     }
 
     if (!denuncias) return null;
-
     if (!Array.isArray(denuncias)) {
+      console.log("ENTRO A DENUNCIA INDIVIDUAL");
+      const usuario = await this.#usuarios.obtenerUsuario(denuncias.usuarioId);
+
+      console.log("USUARIO:", usuario);
 
       return {
         ...denuncias,
-        evidencias: denuncias.evidencias?.map(e => ({
-          ...e,
-          url: `http://localhost:3000/${e.ruta}`
-        }))
-      };
 
+        usuario: usuario
+          ? {
+              nombre: usuario.nombre,
+              apellido: usuario.apellido,
+              dni: usuario.dni,
+            }
+          : null,
+
+        evidencias: denuncias.evidencias?.map((e) => ({
+          ...e,
+          url: `http://localhost:3000/${e.ruta}`,
+        })),
+      };
     }
 
-    return denuncias.map(d => ({
+    return denuncias.map((d) => ({
       ...d,
-      evidencias: d.evidencias?.map(e => ({
+      evidencias: d.evidencias?.map((e) => ({
         ...e,
-        url: `http://localhost:3000/${e.ruta}`
-      }))
+        url: `http://localhost:3000/${e.ruta}`,
+      })),
     }));
-
   };
-
 
   guardarDenuncia = async (datos) => {
     const usuario = await this.#usuarios.obtenerUsuario(datos.usuarioId);

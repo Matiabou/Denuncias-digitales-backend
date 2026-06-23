@@ -4,6 +4,7 @@ import CnxMongoDB from "./modelo/DBMongo.js";
 import RouterDenuncias from "./router/denuncias.js";
 import RouterUsuarios from "./router/usuarios.js";
 import path from "path";
+import fs from "fs";
 
 class Server {
   #port = null;

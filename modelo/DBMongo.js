@@ -7,6 +7,10 @@ class CnxMongoDB {
   static connectionOK = false;
 
   static conectar = async () => {
+    if (CnxMongoDB.connectionOK && CnxMongoDB.client) {
+      return;
+    }
+
     console.log("conectando a la base de datos...");
 
     CnxMongoDB.client = new MongoClient(config.STRCNX, {
@@ -29,6 +33,10 @@ class CnxMongoDB {
     if (CnxMongoDB.client) {
       await CnxMongoDB.client.close();
     }
+
+    CnxMongoDB.db = null;
+    CnxMongoDB.client = null;
+    CnxMongoDB.connectionOK = false;
   };
 }
 

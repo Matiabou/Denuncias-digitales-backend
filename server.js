@@ -6,6 +6,26 @@ import RouterUsuarios from "./router/usuarios.js";
 import path from "path";
 import fs from "fs";
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://denuncias-digitales-frontend.vercel.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error("No permitido por CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 class Server {
   #port = null;
   #routerDenuncias = null;
@@ -23,14 +43,13 @@ class Server {
   async start() {
     const app = express();
 
-    app.use(cors());
+    app.use(cors(corsOptions));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
     //Servicio de recursos estáticos (recursos de Frontend)
     app.use(express.static("public"));
     app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-    app.use(cors({origin:"http://localhost:5173"}));
     app.use("/api/denuncias", this.#routerDenuncias);
     app.use("/api/usuarios", this.#routerUsuarios);
 

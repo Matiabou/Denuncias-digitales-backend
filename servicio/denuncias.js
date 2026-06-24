@@ -28,6 +28,24 @@ class Servicio {
     }
 
     if (!denuncias) return null;
+
+    const normalizarEvidencia = (e) => {
+      let rutaRelativa = e.ruta || "";
+      if (rutaRelativa && (rutaRelativa.includes("\\") || rutaRelativa.includes("/"))) {
+        const normalizada = rutaRelativa.replace(/\\/g, "/");
+        const indexUploads = normalizada.indexOf("uploads/");
+        if (indexUploads !== -1) {
+          rutaRelativa = normalizada.substring(indexUploads);
+        }
+      }
+      const backendUrl = process.env.BACKEND_URL || `http://localhost:${config.PORT || 3000}`;
+      return {
+        ...e,
+        ruta: rutaRelativa,
+        url: `${backendUrl}/${rutaRelativa}`,
+      };
+    };
+
     if (!Array.isArray(denuncias)) {
       console.log("ENTRO A DENUNCIA INDIVIDUAL");
       const usuario = await this.#usuarios.obtenerUsuario(denuncias.usuarioId);
@@ -45,19 +63,13 @@ class Servicio {
             }
           : null,
 
-        evidencias: denuncias.evidencias?.map((e) => ({
-          ...e,
-          url: `http://localhost:3000/${e.ruta}`,
-        })),
+        evidencias: denuncias.evidencias?.map(normalizarEvidencia),
       };
     }
 
     return denuncias.map((d) => ({
       ...d,
-      evidencias: d.evidencias?.map((e) => ({
-        ...e,
-        url: `http://localhost:3000/${e.ruta}`,
-      })),
+      evidencias: d.evidencias?.map(normalizarEvidencia),
     }));
   };
 
@@ -86,11 +98,9 @@ class Servicio {
   };
 
   actualizarDenuncia = async (id, denuncia) => {
-    const denunciaActualizada = await this.#modelo.actualizarDenuncia(
-      id,
-      denuncia,
-    );
-    return denunciaActualizada;
+    const { evidencias, ...datosAActualizar } = denuncia;
+    await this.#modelo.actualizarDenuncia(id, datosAActualizar);
+    return await this.obtenerDenuncias(id);
   };
 
   borrarDenuncia = async (id) => {
@@ -133,6 +143,7 @@ class Servicio {
     doc.fontSize(12);
 
     doc.text(`ID: ${denuncia._id}`);
+    doc.text(`Título: ${denuncia.titulo || "Sin título"}`);
     doc.text(`Fecha: ${denuncia.fecha}`);
     doc.text(`Estado: ${denuncia.estado}`);
 

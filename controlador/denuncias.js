@@ -92,7 +92,7 @@ class Controlador {
         throw new Error("No se ha subido ningún archivo");
       }
 
-      const rutaArchivo = req.file.path;
+      const rutaArchivo = "uploads/" + req.file.filename;
       const resultado = await this.#servicio.subirEvidencia(id, rutaArchivo);
 
       res.json({

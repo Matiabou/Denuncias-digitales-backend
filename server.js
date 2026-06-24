@@ -53,6 +53,14 @@ class Server {
     app.use("/api/denuncias", this.#routerDenuncias);
     app.use("/api/usuarios", this.#routerUsuarios);
 
+    // Middleware global de manejo de errores
+    app.use((err, req, res, next) => {
+      console.error("Error en servidor:", err);
+      res.status(err.status || 500).json({
+        error: err.message || "Error interno del servidor",
+      });
+    });
+
     try {
       if (this.#persistencia == "MONGODB") {
         await CnxMongoDB.conectar();
